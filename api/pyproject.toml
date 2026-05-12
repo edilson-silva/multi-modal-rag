@@ -1,0 +1,39 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Multi Modal RAG API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["fastapi>=0.136.1"]
+
+[dependency-groups]
+dev = [
+    "fastapi[standard]>=0.136.1",
+    "ruff>=0.15.12",
+    "taskipy>=1.14.1",
+    "ty>=0.0.35",
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    "I",  # Isort: Imports should be sorted alphabetically, and grouped.
+    "F",  # Pyflakes: Detects various errors in Python code.
+    "E",  # Pycodestyle: Enforces PEP 8 style guide.
+    "W",  # Pycodestyle: Warns about stylistic issues.
+    "PL", # Pylint: Various linting rules from Pylint.
+    "PT", # Pytest: Rules specific to pytest usage.
+]
+fixable = ["ALL"] # Allows Ruff to remove unused imports automatically.
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.taskipy.tasks]
+start-dev = "fastapi dev src/main.py"
+lint = "ruff check"
+pre_format = "ruff check --fix"
+format = "ruff format"
