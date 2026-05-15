@@ -1,11 +1,17 @@
-from dotenv import find_dotenv, load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, status
+from fastapi.responses import RedirectResponse
 
-load_dotenv(find_dotenv())
+from src.core.settings import settings
 
-api = FastAPI()
+app = FastAPI(
+    title=settings.APP_NAME,
+    version='1.0.0',
+    root_path='/api/v1',
+)
 
 
-@api.get('/')
-async def index():
-    return {'message': 'API running'}
+@app.api_route('/', methods=['GET', 'POST'])
+async def root():
+    return RedirectResponse(
+        url='/docs', status_code=status.HTTP_307_TEMPORARY_REDIRECT
+    )
