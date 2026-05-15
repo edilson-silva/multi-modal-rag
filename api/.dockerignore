@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+include/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nosearch
+.pytest_cache/
+.coverage
+.coverage.*
+
+# Environments and Secrets
+.env
+.venv
+env/
+venv/
+*.swp
+*.bak
+
+# Git and IDEs
+.git/
+.gitignore
+.idea/
+.vscode/
