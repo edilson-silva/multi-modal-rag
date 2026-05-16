@@ -2,6 +2,7 @@ from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse
 
 from src.core.settings import settings
+from src.presentation.api.v1.router import api_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -15,3 +16,6 @@ async def root():
     return RedirectResponse(
         url='/docs', status_code=status.HTTP_307_TEMPORARY_REDIRECT
     )
+
+
+app.include_router(api_router)

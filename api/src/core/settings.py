@@ -1,5 +1,5 @@
 from dotenv import find_dotenv, load_dotenv
-from pydantic import Field, PostgresDsn
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv(find_dotenv())
@@ -14,7 +14,11 @@ class Settings(BaseSettings):
     )
 
     APP_NAME: str = 'Multi Modal RAG'
-    DATABASE_URL: PostgresDsn = Field(..., env='DATABASE_URL')
+    DATABASE_URL: str = Field(..., env='DATABASE_URL')
+    OPENROUTER_BASE: str = Field(..., env='OPENROUTER_BASE')
+    OPENROUTER_KEY: str = Field(..., env='OPENROUTER_KEY')
+    EMBEDDINGS_MODEL: str = Field(..., env='EMBEDDINGS_MODEL')
+    CHAT_MODEL: str = Field(..., env='CHAT_MODEL')
 
 
 settings = Settings()
