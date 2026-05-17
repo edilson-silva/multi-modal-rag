@@ -8,10 +8,16 @@ from fastapi import (
     HTTPException,
     UploadFile,
 )
+from pydantic import BaseModel
 
 from src.infrastructure.rag.rag import RAG
 
 router = APIRouter(prefix='/rag', tags=['rag'])
+
+
+class SearchRequest(BaseModel):
+    name: str
+    query: str
 
 
 @router.post('/train')
@@ -36,3 +42,10 @@ async def train(
         'size': file.size,
         **res,
     }
+
+
+@router.post('/search')
+async def search(body: SearchRequest):
+    rag = RAG(body.name)
+    answer = rag.retrieve(body.query)
+    return {'answer': answer}

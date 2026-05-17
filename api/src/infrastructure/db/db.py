@@ -54,3 +54,15 @@ class DB:
             documents=chunks,
             ids=ids,
         )
+
+    def search(self, query: str, n: int = 5) -> List[Document]:
+        """Retrieve n most similar documents for a given query text
+
+        Args:
+            query (str): Text to search for
+            n (int): Number of results to return
+
+        Returns:
+            List[Document]: List of similar documents
+        """
+        return self.connection.similarity_search(query, k=n)

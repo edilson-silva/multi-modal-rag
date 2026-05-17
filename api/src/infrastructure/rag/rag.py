@@ -2,9 +2,16 @@ import tempfile
 from typing import Any, BinaryIO, Dict
 
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openrouter import ChatOpenRouter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from src.core.settings import settings
 from src.infrastructure.db.db import DB
+from src.infrastructure.rag.util.prompts import (
+    SYSTEM_PROMPT,
+    USER_PROMPT_TEMPLATE,
+)
 
 
 class RAG:
@@ -47,3 +54,36 @@ class RAG:
         db.insert(self.db_collection_name, chunks)
 
         return {'filename': tmp.name, 'page_count': len(documents)}
+
+    def retrieve(self, query: str) -> str:
+        """Retrieve an AI-generated answer grounded in the top-n db chunks
+
+        Args:
+            query (str): Text to search for
+
+        Returns:
+            str: AI-generated answer based solely on retrieved context
+        """
+        db = DB(self.db_collection_name)
+        docs = db.search(query, 5)
+
+        context = '\n\n'.join(
+            f'[{i + 1}] {doc.page_content}' for i, doc in enumerate(docs)
+        )
+
+        llm = ChatOpenRouter(
+            model=settings.CHAT_MODEL,
+            openrouter_api_key=settings.OPENROUTER_KEY,
+        )
+
+        messages = [
+            SystemMessage(content=SYSTEM_PROMPT),
+            HumanMessage(
+                content=USER_PROMPT_TEMPLATE.format(
+                    context=context, query=query
+                )
+            ),
+        ]
+
+        response = llm.invoke(messages)
+        return response.content
