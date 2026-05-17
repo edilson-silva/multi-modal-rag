@@ -65,7 +65,13 @@ class RAG:
             str: AI-generated answer based solely on retrieved context
         """
         db = DB(self.db_collection_name)
-        docs = db.search(query, 5)
+        docs = db.search(query, 5, threshold=settings.SIMILARITY_THRESHOLD)
+
+        if not docs:
+            return (
+                'Não tenho conhecimentos em minha base para lhe '
+                'fornecer uma resposta.'
+            )
 
         context = '\n\n'.join(
             f'[{i + 1}] {doc.page_content}' for i, doc in enumerate(docs)

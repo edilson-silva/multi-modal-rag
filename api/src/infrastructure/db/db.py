@@ -55,14 +55,22 @@ class DB:
             ids=ids,
         )
 
-    def search(self, query: str, n: int = 5) -> List[Document]:
-        """Retrieve n most similar documents for a given query text
+    def search(
+        self, query: str, n: int = 5, threshold: float = 0.5
+    ) -> List[Document]:
+        """Retrieve n most similar documents above a similarity threshold
 
         Args:
             query (str): Text to search for
-            n (int): Number of results to return
+            n (int): Number of candidates to retrieve
+            threshold (float): Minimum cosine similarity (0–1) to keep a result
 
         Returns:
-            List[Document]: List of similar documents
+            List[Document]: Filtered list of similar documents
         """
-        return self.connection.similarity_search(query, k=n)
+        results = self.connection.similarity_search_with_score(query, k=n)
+        # PGVector returns cosine distance (0=identical, 1=opposite).
+        # Convert to similarity and apply the threshold.
+        return [
+            doc for doc, distance in results if (1 - distance) >= threshold
+        ]

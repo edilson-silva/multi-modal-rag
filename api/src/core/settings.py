@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     OPENROUTER_KEY: str = Field(..., env='OPENROUTER_KEY')
     EMBEDDINGS_MODEL: str = Field(..., env='EMBEDDINGS_MODEL')
     CHAT_MODEL: str = Field(..., env='CHAT_MODEL')
+    SIMILARITY_THRESHOLD: float = Field(0.4, env='SIMILARITY_THRESHOLD')
 
 
 settings = Settings()
