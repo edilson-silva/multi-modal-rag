@@ -1,5 +1,5 @@
+import hashlib
 from typing import Dict, List
-from uuid import uuid4
 
 from langchain_core.documents import Document
 from langchain_postgres import PGVector
@@ -48,7 +48,10 @@ class DB:
             collection_name (str): Name of collection to store the documents
             chunks (List[Document]): List of documents chunks to be stored
         """
-        ids = [str(uuid4()) for _ in range(len(chunks))]
+        ids = [
+            hashlib.sha256(chunk.page_content.encode()).hexdigest()
+            for chunk in chunks
+        ]
 
         self.__connections[collection_name].add_documents(
             documents=chunks,
