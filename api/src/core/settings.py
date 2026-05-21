@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     MINIO_BUCKET: str = Field('rag-documents', env='MINIO_BUCKET')
     MINIO_PUBLIC_ENDPOINT: str = Field(..., env='MINIO_PUBLIC_ENDPOINT')
     MINIO_REGION: str = Field('us-east-1', env='MINIO_REGION')
+    OCR_MODEL: str = Field(..., env='OCR_MODEL')
 
 
 settings = Settings()

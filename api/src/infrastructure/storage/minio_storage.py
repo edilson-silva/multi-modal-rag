@@ -36,15 +36,29 @@ class MinIOStorage:
         if not self._client.bucket_exists(settings.MINIO_BUCKET):
             self._client.make_bucket(settings.MINIO_BUCKET)
 
-    def upload(self, object_name: str, data: bytes) -> str:
-        """Upload bytes to MinIO and return the object name."""
+    def upload(
+        self,
+        object_name: str,
+        data: bytes,
+        content_type: str = 'application/pdf',
+    ) -> str:
+        """Upload bytes to MinIO and return the object name.
+
+        Args:
+            object_name (str): Name of the file in the bucker.
+            data (bytes): The file bytes.
+            content_type (str): The file content type.
+
+        Returns:
+            str: Uploaded object name
+        """
         self._ensure_bucket()
         self._client.put_object(
             bucket_name=settings.MINIO_BUCKET,
             object_name=object_name,
             data=BytesIO(data),
             length=len(data),
-            content_type='application/pdf',
+            content_type=content_type,
         )
         return object_name
 
@@ -56,7 +70,7 @@ class MinIOStorage:
             object_name (str): Name of the file in the bucker.
 
         Returns:
-            Presigned URL
+            str: Presigned URL
         """
         return self._public_client.presigned_get_object(
             bucket_name=bucket,

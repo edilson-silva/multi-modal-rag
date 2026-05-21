@@ -24,7 +24,7 @@ class SearchRequest(BaseModel):
 async def train(
     file: Annotated[UploadFile, File(description='PDF file to train the RAG')],
     name: str = Form(...),
-):  # Validate the file type
+):
     if file.content_type != 'application/pdf':
         raise HTTPException(
             status_code=400,
