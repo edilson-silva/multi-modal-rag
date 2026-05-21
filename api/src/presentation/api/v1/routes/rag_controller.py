@@ -16,7 +16,7 @@ router = APIRouter(prefix='/rag', tags=['rag'])
 
 
 class SearchRequest(BaseModel):
-    name: str
+    owner: str
     query: str
 
 
@@ -34,7 +34,7 @@ async def train(
     rag = RAG(name)
     file_content = await file.read()
     bytesio_file = BytesIO(file_content)
-    res = rag.train(bytesio_file)
+    res = rag.train(bytesio_file, filename=file.filename or 'document.pdf')
 
     return {
         'filename': file.filename,
@@ -46,6 +46,5 @@ async def train(
 
 @router.post('/search')
 async def search(body: SearchRequest):
-    rag = RAG(body.name)
-    answer = rag.retrieve(body.query)
-    return {'answer': answer}
+    rag = RAG(body.owner)
+    return rag.retrieve(body.query)
